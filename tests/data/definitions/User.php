@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2mod\swagger\tests\data\definitions;
+namespace brucebnu\swagger\tests\data\definitions;
 
 /**
  * @SWG\Definition(required={"username", "email"})

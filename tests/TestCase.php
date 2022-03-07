@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2mod\swagger\tests;
+namespace brucebnu\swagger\tests;
 
 use Yii;
 use yii\helpers\ArrayHelper;

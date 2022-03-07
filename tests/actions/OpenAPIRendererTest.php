@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2mod\swagger\tests\actions;
+namespace brucebnu\swagger\tests\actions;
 
 use Swagger\Annotations\Info;
 use Swagger\Annotations\Path;

@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2mod\swagger\tests\data;
+namespace brucebnu\swagger\tests\data;
 
 /**
  * @SWG\Swagger(

@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2mod\swagger;
+namespace brucebnu\swagger;
 
 use yii\base\Action;
 
@@ -19,7 +19,7 @@ class SwaggerUIRenderer extends Action
     /**
      * @var string base swagger template
      */
-    public $view = '@vendor/yii2mod/yii2-swagger/views/index';
+    public $view = '@base/brucebnu/yii2-swagger/views/index';
 
     /**
      * @var null|string|false the name of the layout to be applied to this controller's views.

@@ -1,6 +1,6 @@
 <?php
 
-namespace yii2mod\swagger;
+namespace brucebnu\swagger;
 
 use Swagger\Annotations\Swagger;
 use Yii;
