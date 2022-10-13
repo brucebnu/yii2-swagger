@@ -16,17 +16,17 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "yiisoft/yii2": "~2.0.12",
-        "zircote/swagger-php": "^2.0",
+        "yiisoft/yii2": "~2.0.46",
+        "zircote/swagger-php": "^2.1.2",
         "bower-asset/swagger-ui": "^3.52.5"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "~2.0",
-        "phpunit/phpunit": "~6.0"
+        "friendsofphp/php-cs-fixer": "~v3.12.0",
+        "phpunit/phpunit": "~9.5.25"
     },
     "autoload": {
         "psr-4": {
-            "yii2mod\\swagger\\": ""
+            "brucebnu\\swagger\\": ""
         }
     },
     "repositories": [
@@ -34,5 +34,10 @@
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
 }

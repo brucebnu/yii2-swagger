@@ -82,6 +82,7 @@ class OpenAPIRenderer extends Action
         }
 
         return $this->cache->getOrSet($this->cacheKey, function () {
+            //dd($this->scanDir,$this->scanOptions);
             return \Swagger\scan($this->scanDir, $this->scanOptions);
         }, $this->cacheDuration);
     }
