@@ -48,6 +48,9 @@ class OpenAPIRenderer extends Action
      */
     public $cacheKey = 'api-swagger-cache';
 
+    public $host;
+    public $info;
+
     /**
      * @inheritdoc
      */
@@ -66,8 +69,10 @@ class OpenAPIRenderer extends Action
     public function run(): Response
     {
         $this->enableCORS();
-
-        return $this->controller->asJson($this->getSwaggerDocumentation());
+        $swagger = $this->getSwaggerDocumentation();
+        $swagger->host = $this->host;
+        $swagger->info = $this->info;
+        return $this->controller->asJson();
     }
 
     /**
