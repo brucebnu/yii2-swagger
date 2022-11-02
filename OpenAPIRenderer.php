@@ -72,7 +72,8 @@ class OpenAPIRenderer extends Action
         $swagger = $this->getSwaggerDocumentation();
         $swagger->host = $this->host;
         $swagger->info = $this->info;
-        return $this->controller->asJson();
+//dd($swagger);
+        return $this->controller->asJson($swagger);
     }
 
     /**

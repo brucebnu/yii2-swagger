@@ -2,6 +2,7 @@
 
 namespace brucebnu\swagger;
 
+use Yii;
 use yii\base\Action;
 
 /**
@@ -34,8 +35,10 @@ class SwaggerUIRenderer extends Action
      */
     public function run()
     {
-        $this->controller->layout = $this->layout;
-
+        //$this->controller->layout = $this->layout;
+//dd($this->controller->layout, $this->layout);
+        $this->layout = '@backend/themes/'.Yii::$app->params['currentTheme'].'/layout/master.php';
+        //dd();
         return $this->controller->render($this->view, [
             'restUrl' => $this->restUrl,
         ]);
