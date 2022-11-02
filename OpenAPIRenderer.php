@@ -68,12 +68,27 @@ class OpenAPIRenderer extends Action
      */
     public function run(): Response
     {
-        $this->enableCORS();
-        $swagger = $this->getSwaggerDocumentation();
-        $swagger->host = $this->host;
-        $swagger->info = $this->info;
+        $option = [
+            'aliases' => [
+                'oa'=>'OpenApi\\Annotations',
+                'swg'=>'OpenApi\\Annotations'
+            ]
+        ];
+        $openapi = \OpenApi\Generator::scan(\OpenApi\Util::finder($this->scanDir),$option);
+        $openapi->servers = [
+                [
+                    'url'=>$this->host
+                ]
+        ];
+        //        return $openapi;
+        //        $this->enableCORS();
+//        $swagger = $this->getSwaggerDocumentation();
+//        $swagger->host = $this->host;
+//        $swagger->info = $this->info;
 //dd($swagger);
-        return $this->controller->asJson($swagger);
+
+
+        return $this->controller->asJson($openapi);
     }
 
     /**
