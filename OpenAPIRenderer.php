@@ -2,22 +2,17 @@
 
 namespace brucebnu\swagger;
 
+use Swagger\Annotations\Swagger;
 use Yii;
 use yii\base\Action;
 use yii\caching\Cache;
 use yii\di\Instance;
 use yii\web\Response;
-use OpenApi\Generator;
-use OpenApi\Annotations\OpenApi;
 
 /**
  * Class OpenAPIRenderer is responsible for generating the JSON spec.
  *
  * @package yii2mod\swagger\actions
- * https://www.shuzhiduo.com/A/MyJx1YQE5n/
- * https://swagger.io/docs/specification/authentication/
- * https://zircote.github.io/swagger-php/reference/processors.html
- *
  */
 class OpenAPIRenderer extends Action
 {
@@ -30,13 +25,7 @@ class OpenAPIRenderer extends Action
     /**
      * @var array the options passed to `Swagger`, Please refer the `Swagger\scan` function for more information
      */
-    public $scanOptions = [
-        //解释权别名
-        'aliases' => [
-            'oa'=>'OpenApi\\Annotations',
-            'swg'=>'OpenApi\\Annotations'
-        ]
-    ];
+    public $scanOptions = [];
 
     /**
      * @var Cache|array|string the cache used to improve generating api documentation performance. This can be one of the followings:
@@ -49,7 +38,6 @@ class OpenAPIRenderer extends Action
      */
     public $cache = 'cache';
 
-     public  $enableCache = true;
     /**
      * @var int default duration in seconds before the cache will expire
      */
@@ -60,52 +48,16 @@ class OpenAPIRenderer extends Action
      */
     public $cacheKey = 'api-swagger-cache';
 
+    public $host;
     public $info;
 
-
-    //二维数组 请求url
-    public $servers ;
-
-    //认证与授权
-    //https://openid.net/specs/openid-connect-discovery-1_0.html#JWK
-    public $components = [
-        //type：授权协议，枚举值有：apiKey、http、oauth2、openIdConnect
-        //description：安全方法的描述，尽可能的详细，包含使用示例
-        //name：安全密钥 apiKey 在 HTTP Header 请求中的名字
-        //in：安全密钥 apiKey 在 HTTP 传输中的位置，枚举值有：query，header，cookie
-        'securitySchemes'=>[
-            //            'ApiKeyAuth'=>[
-            //                'type'=>'apiKey',
-            //                'in'=>'header',
-            //                'name'=> 'X-API-Key'
-            //            ],
-            //https://openid.net/specs/openid-connect-discovery-1_0.html
-                        'openId'=>[
-                            'type'=>'openIdConnect',
-                            'description'=>'jET 配置',
-                            'openIdConnectUrl'=> 'http://api.tuishui.cn/site/jwt-config',
-                        ],
-        ],
-    ];
-
-
-    /**
-     * @var array[] components:
-    securitySchemes:
-    openId:
-    type: openIdConnect
-    openIdConnectUrl: /.well-known/openid-configuration
-     */
-    public $security = [
-        ['openId'=>[]]
-    ];
     /**
      * @inheritdoc
      */
     public function init(): void
     {
         parent::init();
-        $this->enableCORS();
+
         if ($this->cache !== null) {
             $this->cache = Instance::ensure($this->cache, Cache::class);
         }
@@ -116,39 +68,12 @@ class OpenAPIRenderer extends Action
      */
     public function run(): Response
     {
-        $this->clearCache();
-
-        if ($this->enableCache) {
-            if (($openAPi = $this->cache->get($this->cacheKey)) === false) {
-                $openAPi = $this->getOpenApi();
-                $this->cache->set($this->cacheKey, $openAPi);
-            }
-        } else {
-            $openAPi = $this->getOpenApi();
-        }
-
-        $openAPi->servers   = $this->servers ;
-        $openAPi->info    = $this->info;
-        $openAPi->components= $this->components;
-        $openAPi->security= $this->security;
-
-        return $this->controller->asJson($openAPi);
-    }
-
-
-
-    /**
-     * 是否清除缓存
-     * @throws ExitException
-     */
-    protected function clearCache()
-    {
-        $clearCache = Yii::$app->getRequest()->get('clear-cache', false);
-        if ($clearCache !== false) {
-            $this->cache->delete($this->cacheKey);
-            Yii::$app->response->content = 'Succeed clear swagger api cache.';
-            Yii::$app->end();
-        }
+        $this->enableCORS();
+        $swagger = $this->getSwaggerDocumentation();
+        $swagger->host = $this->host;
+        $swagger->info = $this->info;
+//dd($swagger);
+        return $this->controller->asJson($swagger);
     }
 
     /**
@@ -156,12 +81,16 @@ class OpenAPIRenderer extends Action
      *
      * @return Swagger
      */
-    protected function getOpenApi() :OpenApi
+    protected function getSwaggerDocumentation(): Swagger
     {
+        if (!$this->cache instanceof Cache) {
+            return \Swagger\scan($this->scanDir, $this->scanOptions);
+        }
 
-        $openapi = \OpenApi\Generator::scan($this->scanDir,$this->scanOptions);
-
-        return $openapi;
+        return $this->cache->getOrSet($this->cacheKey, function () {
+            //dd($this->scanDir,$this->scanOptions);
+            return \Swagger\scan($this->scanDir, $this->scanOptions);
+        }, $this->cacheDuration);
     }
 
     /**
