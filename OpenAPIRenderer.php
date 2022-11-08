@@ -80,10 +80,15 @@ class OpenAPIRenderer extends Action
             //                'name'=> 'X-API-Key'
             //            ],
             //https://openid.net/specs/openid-connect-discovery-1_0.html
-                        'openId'=>[
-                            'type'=>'openIdConnect',
-                            'description'=>'jET 配置',
-                            'openIdConnectUrl'=> 'http://api.tuishui.cn/site/jwt-config',
+//                        'openId'=>[
+//                            'type'=>'openIdConnect',
+//                            'description'=>'jET 配置',
+//                            'openIdConnectUrl'=> 'http://api.tuishui.cn/site/jwt-config',
+//                        ],
+                        'bearerAuth'=>[
+                            'type'=>'http',
+                            'scheme'=>'bearer',
+                            'bearerFormat'=> 'JWT',
                         ],
         ],
     ];
@@ -97,7 +102,8 @@ class OpenAPIRenderer extends Action
     openIdConnectUrl: /.well-known/openid-configuration
      */
     public $security = [
-        ['openId'=>[]]
+//        ['openId'=>[]]
+        ['bearerAuth'=>[]]
     ];
     /**
      * @inheritdoc
