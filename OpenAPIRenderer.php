@@ -137,7 +137,6 @@ class OpenAPIRenderer extends Action
         $openAPi->info    = $this->info;
         $openAPi->components= $this->components;
         $openAPi->security= $this->security;
-
         return $this->controller->asJson($openAPi);
     }
 
@@ -175,6 +174,11 @@ class OpenAPIRenderer extends Action
      */
     protected function enableCORS(): void
     {
+        $req  = Yii::$app->getRequest()->getHeaders();
+        $req->set('Access-Control-Allow-Headers', '*');
+        $req->set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+        $req->set('Access-Control-Allow-Origin', '*');
+
         $headers = Yii::$app->getResponse()->getHeaders();
 
         $headers->set('Access-Control-Allow-Headers', 'Content-Type, api_key, Authorization');
