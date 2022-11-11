@@ -15,12 +15,12 @@ class SwaggerUIRenderer extends Action
     /**
      * @var string the rest url configuration
      */
-    public $restUrl;
+    public string $restUrl;
 
     /**
      * @var string base swagger template
      */
-    public $view = '@base/brucebnu/yii2-swagger/views/index';
+    public string $view = '@base/brucebnu/yii2-swagger/views/index';
 
     /**
      * @var null|string|false the name of the layout to be applied to this controller's views.
@@ -28,7 +28,7 @@ class SwaggerUIRenderer extends Action
      * Defaults to null, meaning the actual layout value should inherit that from [[module]]'s layout value.
      * If false, no layout will be applied.
      */
-    public $layout = false;
+    public string|null|false $layout = false;
 
     /**
      * @inheritdoc

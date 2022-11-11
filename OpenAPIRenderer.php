@@ -2,6 +2,7 @@
 
 namespace brucebnu\swagger;
 
+use Symfony\Component\Finder\Finder;
 use Yii;
 use yii\base\Action;
 use yii\caching\Cache;
@@ -22,19 +23,19 @@ use OpenApi\Annotations\OpenApi;
 class OpenAPIRenderer extends Action
 {
     /**
-     * @var string|array|\Symfony\Component\Finder\Finder The directory(s) or filename(s).
+     * @var string|array|Finder The directory(s) or filename(s).
      * If you configured the directory must be full path of the directory.
      */
-    public $scanDir;
+    public Finder|string|array $scanDir;
 
     /**
      * @var array the options passed to `Swagger`, Please refer the `Swagger\scan` function for more information
      */
-    public $scanOptions = [
-        //解释权别名
+    public array $scanOptions = [
+        //解释器别名
         'aliases' => [
-            'oa'=>'OpenApi\\Annotations',
-            'swg'=>'OpenApi\\Annotations'
+            'oa' => 'OpenApi\\Annotations',
+            'swg' => 'OpenApi\\Annotations'
         ]
     ];
 
@@ -47,33 +48,33 @@ class OpenAPIRenderer extends Action
      *
      * When this is not set, it means caching is not enabled
      */
-    public $cache = 'cache';
+    public string|array|Cache $cache = 'cache';
 
-     public  $enableCache = true;
+    public bool $enableCache = false;
     /**
      * @var int default duration in seconds before the cache will expire
      */
-    public $cacheDuration = 360;
+    public int $cacheDuration = 360;
 
     /**
      * @var string the key used to store swagger data in cache
      */
-    public $cacheKey = 'api-swagger-cache';
+    public string $cacheKey = 'api-swagger-cache';
 
     public $info;
 
 
     //二维数组 请求url
-    public $servers ;
+    public $servers;
 
     //认证与授权
     //https://openid.net/specs/openid-connect-discovery-1_0.html#JWK
-    public $components = [
+    public array $components = [
         //type：授权协议，枚举值有：apiKey、http、oauth2、openIdConnect
         //description：安全方法的描述，尽可能的详细，包含使用示例
         //name：安全密钥 apiKey 在 HTTP Header 请求中的名字
         //in：安全密钥 apiKey 在 HTTP 传输中的位置，枚举值有：query，header，cookie
-        'securitySchemes'=>[
+        'securitySchemes' => [
             //            'ApiKeyAuth'=>[
             //                'type'=>'apiKey',
             //                'in'=>'header',
@@ -90,21 +91,23 @@ class OpenAPIRenderer extends Action
                             'scheme'=>'Bearer',
                             'bearerFormat'=> 'JWT',
                         ],
+
         ],
     ];
 
 
     /**
      * @var array[] components:
-    securitySchemes:
-    openId:
-    type: openIdConnect
-    openIdConnectUrl: /.well-known/openid-configuration
+     * securitySchemes:
+     * openId:
+     * type: openIdConnect
+     * openIdConnectUrl: /.well-known/openid-configuration
      */
-    public $security = [
+    public array $security = [
 //        ['openId'=>[]]
-        ['bearerAuth'=>[]]
+        ['bearerAuth' => []]
     ];
+
     /**
      * @inheritdoc
      */
@@ -133,13 +136,12 @@ class OpenAPIRenderer extends Action
             $openAPi = $this->getOpenApi();
         }
 
-        $openAPi->servers   = $this->servers ;
-        $openAPi->info    = $this->info;
-        $openAPi->components= $this->components;
-        $openAPi->security= $this->security;
+        $openAPi->servers = $this->servers;
+        $openAPi->info = $this->info;
+        $openAPi->components = $this->components;
+        $openAPi->security = $this->security;
         return $this->controller->asJson($openAPi);
     }
-
 
 
     /**
@@ -161,12 +163,11 @@ class OpenAPIRenderer extends Action
      *
      * @return Swagger
      */
-    protected function getOpenApi() :OpenApi
+    protected function getOpenApi(): OpenApi
     {
+        //dd($this->scanDir, $this->scanOptions);
+        return \OpenApi\Generator::scan($this->scanDir, $this->scanOptions);
 
-        $openapi = \OpenApi\Generator::scan($this->scanDir,$this->scanOptions);
-
-        return $openapi;
     }
 
     /**
@@ -174,7 +175,7 @@ class OpenAPIRenderer extends Action
      */
     protected function enableCORS(): void
     {
-        $req  = Yii::$app->getRequest()->getHeaders();
+        $req = Yii::$app->getRequest()->getHeaders();
         $req->set('Access-Control-Allow-Headers', '*');
         $req->set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
         $req->set('Access-Control-Allow-Origin', '*');
