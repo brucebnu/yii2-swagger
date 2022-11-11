@@ -87,7 +87,7 @@ class OpenAPIRenderer extends Action
 //                        ],
                         'bearerAuth'=>[
                             'type'=>'http',
-                            'scheme'=>'bearer',
+                            'scheme'=>'Bearer',
                             'bearerFormat'=> 'JWT',
                         ],
         ],
