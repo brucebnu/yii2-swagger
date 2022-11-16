@@ -182,7 +182,7 @@ class OpenAPIRenderer extends Action
 
         $headers = Yii::$app->getResponse()->getHeaders();
 
-        $headers->set('Access-Control-Allow-Headers', 'Content-Type, api_key, Authorization');
+        $headers->set('Access-Control-Allow-Headers', 'Content-Type, api_key, Authorization,Authorization Bearer');
         $headers->set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
         $headers->set('Access-Control-Allow-Origin', '*');
     }
