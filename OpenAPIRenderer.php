@@ -75,6 +75,21 @@ class OpenAPIRenderer extends Action
         //name：安全密钥 apiKey 在 HTTP Header 请求中的名字
         //in：安全密钥 apiKey 在 HTTP 传输中的位置，枚举值有：query，header，cookie
         'securitySchemes' => [
+            'KeyId'=>[
+              'type'  =>'apiKey',
+              'in'=>'header',
+              'name'=> 'Key-Id',
+              'value'=>'01',
+              'description'=>'默认添加 01 或者 02',
+
+            ],
+            'ClientSource'=>[
+                'type'  =>'apiKey',
+                'in'=>'header',
+                'name'=> 'Client-Source',
+                'value'=>'ezpay',
+                'description'=>'游说宝App 请默认写死 ezpay;  topayApp 请写死topay',
+            ],
             //            'ApiKeyAuth'=>[
             //                'type'=>'apiKey',
             //                'in'=>'header',
@@ -105,7 +120,9 @@ class OpenAPIRenderer extends Action
      */
     public array $security = [
 //        ['openId'=>[]]
-        ['bearerAuth' => []]
+        ['bearerAuth' => []],
+        ['KeyId'=>[]],
+        ['ClientSource'=>[]],
     ];
 
     /**
